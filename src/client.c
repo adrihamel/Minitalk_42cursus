@@ -6,7 +6,7 @@
 /*   By: aguerrer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/25 18:39:50 by aguerrer          #+#    #+#             */
-/*   Updated: 2021/06/28 18:40:59 by aguerrer         ###   ########.fr       */
+/*   Updated: 2021/06/28 20:36:43 by aguerrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ void	signal_handle(int signo)
 		g_flag = 1;
 	else if (signo == SIGUSR2)
 		g_flag = 0;
-	else
-		g_flag = -1;
 }
 
 int	is_bit_set(int idx, char buf)
@@ -43,9 +41,9 @@ void	send_null(pid_t pid)
 	{
 		kill(pid, SIGUSR2);
 		pause();
-		if (g_flag != 0)
+		if (g_flag == 1)
 		{
-			ft_putendl_fd("¡¡ Error !!", STDERR_FILENO);
+			ft_putendl_fd("¡ Fatal Error !", STDERR_FILENO);
 			exit(1);
 		}
 		i++;
@@ -63,22 +61,19 @@ void	send_msg(pid_t pid, char *str)
 	i = 0;
 	while (*(str + i))
 	{
-		buf = *(str + i);
+		buf = *(str + i++);
 		j = -1;
 		while (++j < 8)
 		{
 			flag = is_bit_set(j, buf);
-			usleep(50);
 			if (flag == 1)
 				kill(pid, SIGUSR1);
 			else
 				kill(pid, SIGUSR2);
 			pause();
-			if ((flag != g_flag) \
-					&& ft_putstr_fd("¡¡ Error !!\n", STDERR_FILENO))
+			if ((flag != g_flag))
 				exit(1);
 		}
-		i++;
 	}
 	send_null(pid);
 	ft_putstr_fd("Mensaje enviado correctamente\n", STDOUT_FILENO);
@@ -88,18 +83,18 @@ int	main(int argc, char **argv)
 {
 	if (argc != 3)
 	{
-		ft_putstr_fd("Debe introducir el PID del servidor", STDERR_FILENO);
-		ft_putstr_fd("y el mensaje a enviar", STDERR_FILENO);
+		ft_putstr_fd("Debe introducir el PID del servidor", 2);
+		ft_putstr_fd("y el mensaje a enviar", 2);
 		return (1);
 	}
 	if (argv[2][0] == '\0')
 	{
-		ft_putstr_fd("No se puede enviar cadena vacia\n", STDERR_FILENO);
+		ft_putstr_fd("No se puede enviar cadena vacia\n", 2);
 		return (1);
 	}
-	ft_putstr_fd("PID cliente:", STDOUT_FILENO);
-	ft_putnbr_fd(getpid(), STDOUT_FILENO);
-	ft_putchar_fd('\n', STDOUT_FILENO);
+	ft_putstr_fd("PID cliente:", 1);
+	ft_putnbr_fd(getpid(), 1);
+	ft_putchar_fd('\n', 1);
 	signal(SIGUSR1, signal_handle);
 	signal(SIGUSR2, signal_handle);
 	send_msg(ft_atoi(argv[1]), argv[2]);

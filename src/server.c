@@ -6,7 +6,7 @@
 /*   By: aguerrer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/25 17:55:50 by aguerrer          #+#    #+#             */
-/*   Updated: 2021/06/25 18:52:07 by aguerrer         ###   ########.fr       */
+/*   Updated: 2021/06/28 20:19:13 by aguerrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void	init_msg(void)
 	g_msg.buf = 0;
 	g_msg.bit_cnt = 0;
 	g_msg.client_pid = 0;
-	ft_putstr_fd("Escribe el PID del cliente:\n", STDOUT_FILENO);
-	get_next_line(STDIN_FILENO, &line);
+	ft_putstr_fd("Escribe el PID del cliente:\n", 1);
+	get_next_line(0, &line);
 	g_msg.client_pid = ft_atoi(line);
 	free(line);
 	kill(g_msg.client_pid, SIGUSR1);
@@ -47,22 +47,21 @@ void	print_msg(void)
 {
 	t_list	*list;
 
-	ft_putstr_fd("Mensaje recibido: [", STDOUT_FILENO);
+	ft_putstr_fd("Mensaje recibido: [", 1);
 	list = g_msg.msg;
 	while (list != NULL)
 	{
-		ft_putchar_fd(*(char *)list->content, STDOUT_FILENO);
+		ft_putchar_fd(*(char *)list->content, 1);
 		list = list->next;
 	}
-	ft_putstr_fd("]\n", STDOUT_FILENO);
+	ft_putstr_fd("]\n", 1);
 }
 
-void	signal_handler(int signo)
+void	signal_handler(int signal)
 {
 	g_msg.bit_cnt++;
-	g_msg.buf = (g_msg.buf << 1) | (signo == SIGUSR1);
-	usleep(50);
-	if (signo == SIGUSR1)
+	g_msg.buf = (g_msg.buf << 1) | (signal == SIGUSR1);
+	if (signal == SIGUSR1)
 		kill(g_msg.client_pid, SIGUSR1);
 	else
 		kill(g_msg.client_pid, SIGUSR2);
@@ -82,9 +81,9 @@ void	signal_handler(int signo)
 
 int	main(void)
 {
-	ft_putstr_fd("PID Servidor:", STDOUT_FILENO);
-	ft_putnbr_fd(getpid(), STDOUT_FILENO);
-	ft_putchar_fd('\n', STDOUT_FILENO);
+	ft_putstr_fd("PID Servidor:", 1);
+	ft_putnbr_fd(getpid(), 1);
+	ft_putchar_fd('\n', 1);
 	signal(SIGUSR1, signal_handler);
 	signal(SIGUSR2, signal_handler);
 	init_msg();
