@@ -6,7 +6,7 @@
 /*   By: aguerrer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/28 17:28:38 by aguerrer          #+#    #+#             */
-/*   Updated: 2021/06/28 17:30:06 by aguerrer         ###   ########.fr       */
+/*   Updated: 2021/06/29 20:29:48 by aguerrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 #include <stdio.h>
 #include "utils.h"
 
-int			g_flag;
+int	g_flag;
 
-void		signal_handle(int signo)
+void	signal_handle(int signo)
 {
 	if (signo == SIGUSR1)
 		g_flag = 1;
@@ -28,7 +28,7 @@ void		signal_handle(int signo)
 		g_flag = -1;
 }
 
-int			is_bit_set(int idx, char buf)
+int	is_bit_set(int idx, char buf)
 {
 	char	mask;
 
@@ -36,7 +36,7 @@ int			is_bit_set(int idx, char buf)
 	return ((buf & mask) != 0);
 }
 
-void		send_null(pid_t pid)
+void	send_null(pid_t pid)
 {
 	int		i;
 
@@ -54,7 +54,7 @@ void		send_null(pid_t pid)
 	}
 }
 
-void		send_msg(pid_t pid, char *str, int i, int j)
+void	send_msg(pid_t pid, char *str, int i, int j)
 {
 	char	buf;
 	int		flag;
@@ -74,7 +74,7 @@ void		send_msg(pid_t pid, char *str, int i, int j)
 				kill(pid, SIGUSR2);
 			pause();
 			if ((flag != g_flag)
-					&& ft_putstr_fd("fatal error!\n", STDERR_FILENO))
+				&& ft_putstr_fd("fatal error!\n", STDERR_FILENO))
 				exit(1);
 		}
 		i++;
@@ -83,7 +83,7 @@ void		send_msg(pid_t pid, char *str, int i, int j)
 	ft_putstr_fd("Mensaje enviado !\n", STDOUT_FILENO);
 }
 
-int			main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	int	i;
 	int	j;

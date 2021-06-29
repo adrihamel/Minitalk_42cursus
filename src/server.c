@@ -6,7 +6,7 @@
 /*   By: aguerrer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/28 17:28:38 by aguerrer          #+#    #+#             */
-/*   Updated: 2021/06/28 17:30:06 by aguerrer         ###   ########.fr       */
+/*   Updated: 2021/06/29 20:31:02 by aguerrer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 #include <stdio.h>
 #include "server.h"
 
-t_msg		g_msg;
+t_msg	g_msg;
 
-char		*alloc_char(char c)
+char	*alloc_char(char c)
 {
 	char	*p;
 
@@ -32,7 +32,7 @@ char		*alloc_char(char c)
 	return (p);
 }
 
-void		init_msg(void)
+void	init_msg(void)
 {
 	char	*line;
 
@@ -47,7 +47,7 @@ void		init_msg(void)
 	kill(g_msg.client_pid, SIGUSR1);
 }
 
-void		print_msg(void)
+void	print_msg(void)
 {
 	t_list	*list;
 
@@ -61,7 +61,7 @@ void		print_msg(void)
 	ft_putstr_fd("]\n", STDOUT_FILENO);
 }
 
-void		signal_handler(int signal)
+void	signal_handler(int signal)
 {
 	g_msg.bit_cnt++;
 	g_msg.buf = (g_msg.buf << 1) | (signal == SIGUSR1);
@@ -84,7 +84,7 @@ void		signal_handler(int signal)
 	}
 }
 
-int			main(void)
+int	main(void)
 {
 	ft_putstr_fd("PID servidor: ", STDOUT_FILENO);
 	ft_putnbr_fd(getpid(), STDOUT_FILENO);
